@@ -6,36 +6,21 @@
   const current_year = new Date().getFullYear();
 
   const route = useRoute();
-  const isHome = ref(false);
-  //const showPost = useShowPost();
-  //import { ref } from 'vue'
-  //const showPost = ref(false);
-  //console.log(showPost);
-  //console.log(route.query);
 
-  //watch( route.param, (old_param, new_param)=>{
-  //    console.log("from: " + old_param + ", to: " + new_param);
-  //    //if(new_param){
-  //    //  console.log('query found!');
-  //    //  showProjectModal = true;
-  //    //} else {
-  //    //  console.log('query not found!');
-  //    //  showProjectModal = false;
-  //    //}
-  //  }
-  //);
-  //      const post = route.query.project
-  //      console.log("post: " + post);
-  //      showPost.value = true;
-  //      //const {data,error} = 
-  //      //project_list.forEach(item=>{
-  //      //  if (item.slug == project) postContent.value = item
-  //      //}) 
-  //    } else {
-  //      showPost.value = false;
-  //    }
-  //  }
-  //);
+  const showProjectModal = useState('showProjectModal', () => false);
+
+  onMounted(() => {
+    console.log("mounted on route:", route.path);
+    if (route.params.slug) {
+      showProjectModal.value = route.params.slug[0];
+    }
+  });
+
+  definePageMeta({
+    pageTransition: {
+    }
+  })
+
 </script>
 
 <template>
@@ -67,12 +52,6 @@
             <h2 class="text-4xl font-extrabold">
               About Me
             </h2>
-            <!--
-            <p>showPost: {{ showPost }}</p>
-            <button @click="showPost = true" class="mx-5">1</button>
-            <button @click="showPost = false" class="mx-5">0</button>
-            <button @click="showPost = !showPost">T</button>
-            -->
             <div v-html="about[0].content.rendered">
             </div>
           </div>
@@ -99,23 +78,6 @@
       </footer>
 
     </div>
-    <ProjectModal v-show="showProjectModal" @close-modal="showProjectModal = false" />
+      <ProjectModal :project="posts.find(project => { return project.slug === showProjectModal })" :wordpress_host="wordpress_host" />
   </main>
 </template>
-
-<script>
-  export default {
-    watch: {
-      $route(to, from) {
-        console.log("route changed: ", from.query, to.query);
-      },
-      deep: true,
-      immediate: true
-    },
-    data() {
-      return {
-        showProjectModal: true,
-      }
-    }
-}
-</script>

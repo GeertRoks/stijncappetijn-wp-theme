@@ -1,16 +1,16 @@
 <script setup>
   const props = defineProps(['post', 'wordpress_host']);
-  console.log(props.post);
   const { data: post_image } = await useFetch(props.wordpress_host+'/media/'+props.post.featured_media, { pick: ['source_url', 'media_details.filename'] })
   const has_image = (props.post.featured_media === 0) ? false : true;
   const post_path = "project/" + props.post.slug;
 
   //const showPost = useState('showPost');
+  const showProjectModal = useState('showProjectModal', () => false);
+  const openProjectModal = (slug) => {
+    showProjectModal.value = slug;
+    navigateTo(`/project/${slug}`);
+  };
 
-  const handle = (item)=>{
-    if(!window)return
-    window.history.pushState(null,'',`?project=${item.slug}`)
-  }
 </script>
 
 <template>
@@ -29,7 +29,7 @@
       <!--
         <NuxtLink :to="post_path" class="p-4 absolute h-full inset-0 bg-gray-700 cursor-pointer hover:bg-black/60 transition" v-bind:class="{'opacity-0': has_image, 'hover:opacity-100': has_image}">
       -->
-      <div @click="handle(props.post)" class="p-4 absolute h-full inset-0 bg-gray-700 cursor-pointer hover:bg-black/60 transition" :class="{'opacity-0': has_image, 'hover:opacity-100': has_image}">
+      <div @click="openProjectModal(props.post.slug)" class="p-4 absolute h-full inset-0 bg-gray-700 cursor-pointer hover:bg-black/60 transition" :class="{'opacity-0': has_image, 'hover:opacity-100': has_image}">
         <div class="">
           <h1 class="text-4xl text-white my-2 font-extrabold">
             <!--
