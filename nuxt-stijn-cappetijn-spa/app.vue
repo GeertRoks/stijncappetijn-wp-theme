@@ -13,19 +13,19 @@
     console.log("mounted on route:", route.path);
     if (route.params.slug) {
       showProjectModal.value = route.params.slug[0];
+      document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
     }
   });
 
-  definePageMeta({
-    pageTransition: {
-    }
-  })
-
+  const scrollArrow = () => {
+    const element = document.getElementById('about');
+    element.scrollIntoView({ behavior: 'smooth' });
+  };
 </script>
 
 <template>
   <main class="bg-black text-white"> 
-    <div id="page-wrapper">
+    <div id="page-wrapper" class="h-screen w-screen overflow-scroll" :class="{ 'overflow-hidden blur-sm': showProjectModal }">
 
       <section id="hero" class="relative h-screen w-screen">
         <div class="h-full w-full">
@@ -34,12 +34,16 @@
             <source src="http://localhost/wp-content/uploads/2024/02/Home_Page.webm" type="video/webm" /> 
           </video>
         </div>
-        <div class="absolute inset-0 flex flex-col justify-center bg-gray-600/60 z-20">
+        <div class="absolute inset-0 flex flex-col justify-between items-center bg-gray-600/60 z-20">
+          <div><!--spacer--></div>
           <div class="text-center">
             <h1 class="text-4xl sm:text-6xl font-extrabold my-4">
               {{ about[0].title.rendered }}
             </h1>
             <p class="text-lg sm:text-2xl font-medium">Musician | Producer</p>
+          </div>
+          <div class="p-4 text-4xl font-medium animate-bounce cursor-pointer" @click="scrollArrow()">
+            &#65088
           </div>
         </div>
       </section>

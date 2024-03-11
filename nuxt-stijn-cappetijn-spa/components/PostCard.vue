@@ -37,7 +37,7 @@
             -->
             {{ props.post.title.rendered }}
           </h1>
-          <p class="text-xl text-gray-400 my-1">
+          <p class="text-xl font-medium text-gray-400 my-1">
           <!--
             <?php the_date(); ?>
           -->
