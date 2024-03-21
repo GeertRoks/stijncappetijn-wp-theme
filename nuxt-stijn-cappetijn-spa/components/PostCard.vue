@@ -2,9 +2,7 @@
   const props = defineProps(['post', 'wordpress_host']);
   const { data: post_image } = await useFetch(props.wordpress_host+'/media/'+props.post.featured_media, { pick: ['source_url', 'media_details.filename'] })
   const has_image = (props.post.featured_media === 0) ? false : true;
-  const post_path = "project/" + props.post.slug;
 
-  //const showPost = useState('showPost');
   const showProjectModal = useState('showProjectModal', () => false);
   const openProjectModal = (slug) => {
     showProjectModal.value = slug;

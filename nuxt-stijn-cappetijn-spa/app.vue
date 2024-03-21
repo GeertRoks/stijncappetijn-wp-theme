@@ -1,8 +1,13 @@
 <script setup>
-  const wordpress_host = 'http://localhost/wp-json/wp/v2'
-  const { data:about } = await useFetch(wordpress_host+'/pages', { query: {slug: 'frontpage'} });
-  const { data:featured_image } = await useFetch(wordpress_host+'/media/'+about.value[0].featured_media, { pick: ['source_url', 'media_details.filename'] });
-  const { data:posts } = await useFetch(wordpress_host+'/posts');
+  const wordpress_host = 'http://localhost';
+  const wordpress_api = '/wp-json/wp/v2';
+  const config_api = '/wp-json/plugin_stijncappetijn_config/v1';
+  const wordpress_api_url = wordpress_host + wordpress_api;
+  const config_api_url = wordpress_host + config_api;
+
+  const { data:site_configuration } = await useFetch(config_api_url+'/config');
+  //const { data:featured_image } = await useFetch(wordpress_api_url+'/media/'+about.value[0].featured_media, { pick: ['source_url', 'media_details.filename'] });
+  const { data:posts } = await useFetch(wordpress_api_url+'/posts/?per_page=100');
   const current_year = new Date().getFullYear();
 
   const route = useRoute();
@@ -20,8 +25,26 @@
   const scrollArrow = () => {
     const element = document.getElementById('about');
     element.scrollIntoView({ behavior: 'smooth' });
+    console.log(posts.value);
   };
+
+  const isImageOrVideoFile = (fileName) => {
+    // Regular expression to match image file extensions
+    const imageExtensions = /\.(jpg|jpeg|png|gif|bmp|svg\+xml)$/i;
+    // Regular expression to match video file extensions
+    const videoExtensions = /\.(mp4|webm|ogg|flv|avi|mov|wmv|mkv)$/i;
+
+    // Check if the file name matches any of the image or video extensions
+    if (imageExtensions.test(fileName)) {
+        return 'image';
+    } else if (videoExtensions.test(fileName)) {
+        return 'video';
+    } else {
+        return 'unknown';
+    }
+  }
 </script>
+
 
 <template>
   <main class="bg-black text-white"> 
@@ -29,18 +52,20 @@
 
       <section id="hero" class="relative h-screen w-screen">
         <div class="h-full w-full">
-          <video id="bgVideo" class="h-full w-full object-cover" preload="true" autoplay loop muted>
-            <!-- TODO: make link variable, set in customize menu. Also give option for photo (use php to change between video and img tag) -->
-            <source src="http://localhost/wp-content/uploads/2024/02/Home_Page.webm" type="video/webm" /> 
+          <video v-if="isImageOrVideoFile(site_configuration.landing.background) === 'video'" id="bgVideo" class="h-full w-full object-cover" preload="true" autoplay loop muted>
+            <source :src="site_configuration.landing.background" type="video/webm" /> 
           </video>
+          <img v-else :src="site_configuration.landing.background" class="h-full w-full object-cover" />
         </div>
         <div class="absolute inset-0 flex flex-col justify-between items-center bg-gray-600/60 z-20">
           <div><!--spacer--></div>
           <div class="text-center">
             <h1 class="text-4xl sm:text-6xl font-extrabold my-4">
-              {{ about[0].title.rendered }}
+              {{ site_configuration.landing.title }}
             </h1>
-            <p class="text-lg sm:text-2xl font-medium">Musician | Producer</p>
+            <p class="text-lg sm:text-2xl font-medium">
+              {{ site_configuration.landing.subtitle }}
+            </p>
           </div>
           <div class="p-4 text-4xl font-medium animate-bounce cursor-pointer" @click="scrollArrow()">
             &#65088
@@ -52,13 +77,14 @@
 
       <section id="about" class="w-screen py-12">
         <div class="flex flex-col sm:flex-row-reverse items-start justify-center p-4 md:w-full lg:w-8/12 xl:w-6/12 m-auto">
-          <img class="sm:w-4/12 m-auto" :src="featured_image.source_url"/>
+          <img class="sm:w-4/12 m-auto" :src="site_configuration.about.picture"/>
           <div class="p-4 sm:w-8/12">
             <h2 class="text-4xl font-extrabold">
-              About Me
+              {{ site_configuration.about.biotitle }}
             </h2>
-            <div v-html="about[0].content.rendered">
-            </div>
+            <p>
+              {{ site_configuration.about.bio }}
+            </p>
           </div>
         </div>
       </section>
@@ -67,7 +93,7 @@
 
       <section id="projects" class="w-screen py-12 sm:px-2">
         <div class="min-w-screen-lg grid 2xl:grid-cols-6 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
-          <PostCard v-for="post,index in posts" :key="'project'+index" v-bind:post="post" v-bind:wordpress_host="wordpress_host" />
+          <PostCard v-for="post,index in posts" :key="'project'+index" v-bind:post="post" v-bind:wordpress_host="wordpress_api_url" />
         </div>
 
       </section>
@@ -84,12 +110,12 @@
               <svg fill="#ffffff" viewBox="0 -4 32 32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" stroke="#ffffff" stroke-width="0.00032"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M30.722,20.579 C30.137,21.894 28.628,23.085 27.211,23.348 C27.066,23.375 23.603,24.000 16.010,24.000 L15.990,24.000 C8.398,24.000 4.932,23.375 4.788,23.349 C3.371,23.085 1.861,21.894 1.275,20.578 C1.223,20.461 0.001,17.647 0.001,12.000 C0.001,6.353 1.223,3.538 1.275,3.421 C1.861,2.105 3.371,0.915 4.788,0.652 C4.932,0.625 8.398,-0.000 15.990,-0.000 C23.603,-0.000 27.066,0.625 27.210,0.651 C28.628,0.915 30.137,2.105 30.723,3.420 C30.775,3.538 32.000,6.353 32.000,12.000 C32.000,17.647 30.775,20.461 30.722,20.579 ZM28.893,4.230 C28.581,3.529 27.603,2.759 26.845,2.618 C26.813,2.612 23.386,2.000 16.010,2.000 C8.615,2.000 5.185,2.612 5.152,2.618 C4.394,2.759 3.417,3.529 3.104,4.234 C3.094,4.255 2.002,6.829 2.002,12.000 C2.002,17.170 3.094,19.744 3.106,19.770 C3.417,20.471 4.394,21.241 5.153,21.382 C5.185,21.388 8.615,22.000 15.990,22.000 L16.010,22.000 C23.386,22.000 26.813,21.388 26.846,21.382 C27.604,21.241 28.581,20.471 28.894,19.766 C28.904,19.744 29.998,17.170 29.998,12.000 C29.998,6.830 28.904,4.255 28.893,4.230 ZM13.541,17.846 C13.379,17.949 13.193,18.000 13.008,18.000 C12.842,18.000 12.676,17.959 12.525,17.875 C12.206,17.699 12.008,17.364 12.008,17.000 L12.008,7.000 C12.008,6.637 12.204,6.303 12.521,6.127 C12.838,5.950 13.227,5.958 13.534,6.149 L21.553,11.105 C21.846,11.286 22.026,11.606 22.027,11.951 C22.028,12.296 21.852,12.618 21.560,12.801 L13.541,17.846 ZM14.009,8.794 L14.009,15.189 L19.137,11.963 L14.009,8.794 Z"></path> </g></svg>
             </a>
           </div>
-          <p>Copyright © {{ current_year }} | {{ about[0].title.rendered }}</p>
+          <p>Copyright © {{ current_year }} | {{ site_configuration.landing.title }}</p>
           <p>Theme created with ❤️ by <a href="https://geertroks.com" class="underline">Geert Roks</a></p>
         </div>
       </footer>
 
     </div>
-      <ProjectModal :project="posts.find(project => { return project.slug === showProjectModal })" :wordpress_host="wordpress_host" />
+    <ProjectModal :project="posts.find(project => { return project.slug === showProjectModal })" :wordpress_host="wordpress_api_url" />
   </main>
 </template>
