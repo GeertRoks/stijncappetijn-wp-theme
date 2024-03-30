@@ -72,23 +72,21 @@
         </div>
       </section>
 
-      <hr>
 
       <section id="about" class="w-screen py-12">
         <div class="flex flex-col sm:flex-row-reverse items-start justify-center p-4 md:w-full lg:w-8/12 xl:w-6/12 m-auto">
           <img class="sm:w-4/12 m-auto" :src="site_configuration.about.picture"/>
           <div class="p-4 sm:w-8/12">
-            <h2 class="text-4xl font-extrabold">
+            <h2 class="text-4xl font-extrabold my-2">
               {{ site_configuration.about.biotitle }}
             </h2>
-            <p>
+            <p class="text-xl text-gray-300">
               {{ site_configuration.about.bio }}
             </p>
           </div>
         </div>
       </section>
 
-      <hr>
 
       <section id="projects" class="w-screen py-12 sm:px-2">
         <div class="min-w-screen-lg grid 2xl:grid-cols-6 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
@@ -97,7 +95,6 @@
 
       </section>
 
-      <hr>
 
       <footer class="w-screen flex flex-col justify-center">
         <div class="my-4 flex flex-col items-center text-center justify-center text-sm">
