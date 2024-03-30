@@ -66,5 +66,17 @@ document.addEventListener('DOMContentLoaded', function() {
       state_image();
     }
   }
+
+
 });
 
+let addSocialsRow = () => {
+  let new_row_index = document.getElementById('dynamic-list').childElementCount;
+  let newRow = document.createElement('div');
+  newRow.className = 'row';
+  newRow.innerHTML = `
+<input type="text" class="url-input" name="footer_socials[${new_row_index}][0]" placeholder="Enter URL">
+<textarea class="svg-input" name="footer_socials[${new_row_index}][1]" placeholder="Enter SVG HTML"></textarea>
+`;
+  document.getElementById('dynamic-list').appendChild(newRow);
+}

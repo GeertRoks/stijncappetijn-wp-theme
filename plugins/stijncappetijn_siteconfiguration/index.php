@@ -93,6 +93,10 @@ function stijncappetijn_config_menu() {
           <section>
             <h3>Footer</h3>
             <p><strong>Socials</strong></p>
+            <div id="dynamic-list">
+              <?php echo populate_dynamic_list(); ?>
+            </div>
+                <button id="add-row" type="button" class="button" onclick="addSocialsRow()">Add Row</button>
           </section>
         <?php submit_button(); ?>
       </form>
@@ -107,6 +111,7 @@ function register_custom_settings() {
     register_setting('site_configuration_options', 'about_biotitle');
     register_setting('site_configuration_options', 'about_bio');
     register_setting('site_configuration_options', 'about_picture');
+    register_setting('site_configuration_options', 'footer_socials');
 }
 add_action('admin_init', 'register_custom_settings');
 
@@ -121,10 +126,11 @@ add_action('rest_api_init', 'custom_rest_api_endpoint');
 function get_config_options() {
     $landing = get_landing_option();
     $about = get_about_option();
-    #$footer = get_footer_option();
+    $footer = get_footer_option();
     return new WP_REST_Response(array(
       'landing' => $landing,
       'about' => $about,
+      'footer' => $footer,
     ), 200);
 }
 function get_landing_option() {
@@ -148,15 +154,38 @@ function get_about_option() {
     );
 }
 function get_footer_option() {
-    //$value = get_option($option_name);
-    //return new WP_REST_Response($value, 200);
+    $socials = get_option('footer_socials');
+    return array(
+      'socials' => $socials,
+    );
 }
 
 function stijncappetijn_admin_scripts() {
     wp_enqueue_media();
-    wp_enqueue_script('admin-js', get_template_directory_uri() . '/assets/admin.js', array('jquery'), '1.0', true);
+    $file = plugin_dir_url( __FILE__ ) . 'assets/admin.js';
+    wp_register_script('admin-js-stijncappetijn', $file, [], null, true);
+    wp_enqueue_script('admin-js-stijncappetijn');
 }
 add_action('admin_enqueue_scripts', 'stijncappetijn_admin_scripts');
+
+function populate_dynamic_list() {
+    #save_dynamic_list();
+    $optionname = 'footer_socials';
+    $rows = get_option($optionname);
+    $output = '';
+    foreach ($rows as $index => $row) {
+        if ($row[0]) {
+            $output .= '<div class="row">';
+            // Correctly embed the $index variable within the string
+            $output .= '<input type="text" class="url-input" name="' . esc_attr($optionname) . '[' . $index . '][0]" value="' . esc_attr($row[0]) . '">';
+            $output .= '<textarea class="svg-input" name="' . esc_attr($optionname) . '[' . $index . '][1]">' . esc_textarea($row[1]) . '</textarea>';
+            $output .= '</div>';
+        }
+    }
+    return $output;
+}
+
+add_action('admin_init', 'populate_dynamic_list')
 
 
 ?>
