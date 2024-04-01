@@ -6,7 +6,7 @@
   const config_api_url = wordpress_host + config_api;
 
   const { data:site_configuration } = await useFetch(config_api_url+'/config');
-  const { data:posts } = await useFetch(wordpress_api_url+'/posts/?per_page=100');
+  const { data:projects } = await useFetch(wordpress_api_url+'/posts/?per_page=100');
   const current_year = new Date().getFullYear();
 
   const route = useRoute();
@@ -14,7 +14,6 @@
   const showProjectModal = useState('showProjectModal', () => false);
 
   onMounted(() => {
-    console.log("mounted on route:", route.path);
     if (route.params.slug) {
       showProjectModal.value = route.params.slug[0];
       document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
@@ -24,7 +23,6 @@
   const scrollArrow = () => {
     const element = document.getElementById('about');
     element.scrollIntoView({ behavior: 'smooth' });
-    console.log(posts.value);
   };
 
   const isImageOrVideoFile = (fileName) => {
@@ -90,7 +88,7 @@
 
       <section id="projects" class="w-screen py-12 sm:px-2">
         <div class="min-w-screen-lg grid 2xl:grid-cols-6 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
-          <PostCard v-for="post,index in posts" :key="'project'+index" v-bind:post="post" v-bind:wordpress_host="wordpress_api_url" />
+          <PostCard v-for="project,index in projects" :key="'project'+index" v-bind:project="project" v-bind:wordpress_host="wordpress_api_url" />
         </div>
 
       </section>
@@ -108,6 +106,6 @@
       </footer>
 
     </div>
-    <ProjectModal :project="posts.find(project => { return project.slug === showProjectModal })" :wordpress_host="wordpress_api_url" />
+    <ProjectModal :project="projects.find(project => { return project.slug === showProjectModal })" :wordpress_host="wordpress_api_url" />
   </main>
 </template>
