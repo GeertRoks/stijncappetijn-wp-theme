@@ -1,26 +1,51 @@
 services:
+  webserver:
+    depends_on:
+      - wordpress
+      - nuxt
+    image: nginx:1.15.12-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - wordpress:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
+    networks:
+      - app-network
+
+  nuxt:
+    build:
+      context: ./nuxt-stijn-cappetijn-spa
+      dockerfile: Dockerfile
+    image: nuxt-stijn-cappetijn-spa
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
   wordpress:
     depends_on:
       - database
     image: wordpress:6.4
-    ports:
-      - 80:80
+    env_file: .env
     environment:
-      WORDPRESS_DB_HOST: '${MYSQL_HOST}'
-      WORDPRESS_DB_NAME: '${MYSQL_DATABASE}'
-      WORDPRESS_DB_USER: '${MYSQL_USER}'
-      WORDPRESS_DB_PASSWORD: '${MYSQL_PASSWORD}'
+      - WORDPRESS_DB_HOST=database:3306
+      - WORDPRESS_DB_NAME=$MYSQL_DATABASE
+      - WORDPRESS_DB_USER=$MYSQL_USER
+      - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
     volumes:
-      - ./wp-content:/var/www/html/wp-content:z
+      - wordpress:/var/www/html
       - ./themes/wp_theme_external_site_rest_api:/var/www/html/wp-content/themes/wp_theme_external_site_rest_api:z
       - ./plugins/stijncappetijn_siteconfiguration:/var/www/html/wp-content/plugins/stijncappetijn_siteconfiguration:z
       - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:z
+    networks:
+      - app-network
 
 
   database:
     image: mysql:8.3
-    ports:
-      - 3306:3306
+    env_file: .env
     environment:
       MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
       MYSQL_DATABASE: '${MYSQL_DATABASE}'
@@ -28,6 +53,13 @@ services:
       MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
     volumes:
       - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
 
 volumes:
   mysql-data:
+  wordpress:
+
+networks:
+  app-network:
+    driver: bridge

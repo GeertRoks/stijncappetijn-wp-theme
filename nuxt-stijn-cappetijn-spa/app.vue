@@ -1,5 +1,5 @@
 <script setup>
-  const wordpress_host = 'http://localhost';
+  const wordpress_host = 'http://wordpress';
   const wordpress_api = '/wp-json/wp/v2';
   const config_api = '/wp-json/plugin_stijncappetijn_config/v1';
   const wordpress_api_url = wordpress_host + wordpress_api;
