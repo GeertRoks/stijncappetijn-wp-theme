@@ -93,8 +93,9 @@ function stijncappetijn_config_menu() {
           <section>
             <h3>Footer</h3>
             <p><strong>Socials</strong></p>
-            <div id="dynamic-list">
-              <?php echo populate_dynamic_list(); ?>
+            <?php echo preview_socials(); ?>
+            <div id="socials-list">
+              <?php echo populate_socials_list(); ?>
             </div>
                 <button id="add-row" type="button" class="button" onclick="addSocialsRow()">Add Row</button>
           </section>
@@ -168,8 +169,7 @@ function stijncappetijn_admin_scripts() {
 }
 add_action('admin_enqueue_scripts', 'stijncappetijn_admin_scripts');
 
-function populate_dynamic_list() {
-    #save_dynamic_list();
+function populate_socials_list() {
     $optionname = 'footer_socials';
     $rows = get_option($optionname);
     $output = '';
@@ -184,8 +184,19 @@ function populate_dynamic_list() {
     }
     return $output;
 }
+add_action('admin_init', 'populate_socials_list');
 
-add_action('admin_init', 'populate_dynamic_list')
+function preview_socials() {
+    $icons = get_option('footer_socials');
+    $output = '<div style="background:black; height: 1.25rem; width: fit-content; padding: 0.25rem; display:flex;">';
+    foreach ($icons as $index => $icon) {
+        $output .= '<a href="' . $icon[0] . '" style="height=1.25rem; width:1.25rem; margin-right: 0.5rem;">';
+        $output .= $icon[1];
+        $output .= '</a>';
+    }
+    $output .= '</div>';
+    return $output;
+}
 
 
 ?>
