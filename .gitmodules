@@ -1,0 +1,3 @@
+[submodule "themes/wp_theme_external_site_rest_api"]
+	path = themes/wp_theme_external_site_rest_api
+	url = https://github.com/GeertRoks/wp_theme_external_site_rest_api.git
