@@ -15,11 +15,19 @@
   const showProjectModal = useState('showProjectModal', () => false);
 
   onMounted(() => {
-    if (route.params.slug) {
-      showProjectModal.value = route.params.slug[0];
+    if (route.fullPath === "/") {
+      showProjectModal.value = false;
+    } else {
+      const pathSegments = route.fullPath.split('/');
+      showProjectModal.value = pathSegments[pathSegments.length - 1];
       document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
     }
   });
+
+watch(route, (newRoute) => {
+  const pathSegments = newRoute.fullPath.split('/');
+  showProjectModal.value = pathSegments[pathSegments.length - 1];
+}, { deep: true })
 
   const scrollArrow = () => {
     const element = document.getElementById('about');
