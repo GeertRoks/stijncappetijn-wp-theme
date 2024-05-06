@@ -1,5 +1,6 @@
 <script setup>
   const wordpress_host = 'http://wordpress';
+  //const wordpress_host = 'http://localhost';
   const wordpress_api = '/wp-json/wp/v2';
   const config_api = '/wp-json/plugin_stijncappetijn_config/v1';
   const wordpress_api_url = wordpress_host + wordpress_api;
@@ -44,7 +45,7 @@
 
 
 <template>
-  <main class="bg-black text-white"> 
+  <main v-if="site_configuration" class="bg-black text-white">
     <div id="page-wrapper" class="h-screen w-screen overflow-scroll" :class="{ 'overflow-hidden blur-sm': showProjectModal }">
 
       <section id="hero" class="relative h-screen w-screen">
@@ -108,4 +109,10 @@
     </div>
     <ProjectModal :project="projects.find(project => { return project.slug === showProjectModal })" :wordpress_host="wordpress_api_url" />
   </main>
+  <div v-else class="h-screen flex flex-row justify-center">
+    <div class="max-w-lg m-auto p-8 bg-gray-200">
+      <h1 class="text-2xl font-bold my-2">Welcome to stijncappetijn.com</h1>
+      <p>When you see this page, something went wrong. If you are a visitor, please contact the owner of this page and notify them of this message.</p>
+    </div>
+  </div>
 </template>
