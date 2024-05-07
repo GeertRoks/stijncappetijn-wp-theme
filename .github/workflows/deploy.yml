@@ -22,6 +22,7 @@ jobs:
         script: |
           cd ~/stijncappetijn-wp-theme
           git pull origin main
+          git submodule update --recursive --remote
           docker-compose build
           docker-compose down
           docker-compose up --build -d
