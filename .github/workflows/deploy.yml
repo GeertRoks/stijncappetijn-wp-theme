@@ -25,9 +25,3 @@ jobs:
           docker-compose build
           docker-compose down
           docker-compose up --build -d
-
-    - name: Notify
-      uses: peter-evans/create-issue@v3
-      with:
-        title: Deployment successful
-        body: The application has been successfully deployed.
