@@ -38,6 +38,7 @@ services:
       - WORDPRESS_DB_NAME=$MYSQL_DATABASE
       - WORDPRESS_DB_USER=$MYSQL_USER
       - WORDPRESS_DB_PASSWORD=$MYSQL_PASSWORD
+      - FRONTEND_URL=$NUXT_URL
     volumes:
       - wordpress:/var/www/html
       - ./themes/wp_theme_external_site_rest_api:/var/www/html/wp-content/themes/wp_theme_external_site_rest_api:z
