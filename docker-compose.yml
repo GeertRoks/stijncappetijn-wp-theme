@@ -6,7 +6,7 @@ services:
       - wordpress
       - nuxt
     image: nginx:1.15.12-alpine
-    container_name: webserver
+    container_name: stijncappetijn-webserver
     restart: unless-stopped
     ports:
       - "80:80"
@@ -23,6 +23,7 @@ services:
       context: ./nuxt-stijn-cappetijn-spa
       dockerfile: Dockerfile
     image: nuxt-stijn-cappetijn-spa
+    container_name: stijncappetijn-nuxt
     networks:
       - app-network
 
@@ -30,6 +31,7 @@ services:
     depends_on:
       - database
     image: wordpress:6.4
+    container_name: stijncappetijn-wordpress
     env_file: .env
     environment:
       - WORDPRESS_DB_HOST=database:3306
@@ -47,6 +49,7 @@ services:
 
   database:
     image: mysql:8.3
+    container_name: stijncappetijn-database
     env_file: .env
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD

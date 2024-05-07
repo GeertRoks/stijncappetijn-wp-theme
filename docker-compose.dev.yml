@@ -3,6 +3,7 @@ services:
     depends_on:
       - database
     image: wordpress:6.4
+    container_name: stijncappetijn-wordpress
     ports:
       - 80:80
     environment:
@@ -19,6 +20,7 @@ services:
 
   database:
     image: mysql:8.3
+    container_name: stijncappetijn-database
     ports:
       - 3306:3306
     environment:
