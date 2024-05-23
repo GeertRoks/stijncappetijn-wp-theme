@@ -18,7 +18,7 @@
             <img :src="project.featured_media_url" class="h-full w-full object-contain" />
           </div>
           <div class="w-full lg:w-5/12 h-full lg:overflow-scroll">
-            <h2 class="text-4xl font-extrabold my-2">{{ props.project.title.rendered }}</h2>
+            <h2 class="text-4xl font-extrabold my-2" v-html="props.project.title.rendered"></h2>
             <h3 class="my-1 font-medium text-xl text-gray-400">
               {{ new Date(props.project.date).toLocaleDateString('en-us', { year:"numeric", month:"short"}) }}
             </h3>
