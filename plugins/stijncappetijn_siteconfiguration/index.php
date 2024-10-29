@@ -165,8 +165,9 @@ function stijncappetijn_admin_scripts() {
     wp_enqueue_media();
     $file = plugin_dir_url( __FILE__ ) . 'assets/admin.js';
     wp_register_script('admin-js-stijncappetijn', $file, [], null, true);
-    if (is_page('site-configuration')) {
-        wp_enqueue_script('my-plugin-script');
+    global $pagenow;
+    if ( ($pagenow === 'admin.php') && ($_GET['page'] === 'site-configuration') ) {
+        wp_enqueue_script('admin-js-stijncappetijn');
     }
 }
 add_action('admin_enqueue_scripts', 'stijncappetijn_admin_scripts');
