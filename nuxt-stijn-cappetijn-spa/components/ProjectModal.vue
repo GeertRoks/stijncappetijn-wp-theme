@@ -22,7 +22,7 @@
             <h3 class="my-1 font-medium text-xl text-gray-400">
               {{ new Date(props.project.date).toLocaleDateString('en-us', { year:"numeric", month:"short"}) }}
             </h3>
-            <div class="project-content p-4" v-html="props.project.content.rendered"></div>
+            <div class="project-content py-4" v-html="props.project.content.rendered"></div>
           </div>
         </div>
       </div>

@@ -12,8 +12,8 @@
 
 <template>
   <article>
-    <div class="relative aspect-square">
-      <img v-if="has_image" :src="project.featured_media_url" class="h-full w-full object-cover aspect-square" />
+    <div class="relative aspect-square card-container overflow-hidden">
+      <img v-if="has_image" :src="project.featured_media_url" class="h-full w-full object-cover aspect-square hover:blur-sm" />
       <div @click="openProjectModal(props.project.slug)" class="p-4 absolute h-full inset-0 bg-gray-700 cursor-pointer hover:bg-black/60 transition" :class="{'opacity-0': has_image, 'hover:opacity-100': has_image}">
         <div class="">
           <h1 class="text-4xl text-white my-2 font-extrabold" v-html="props.project.title.rendered"></h1>
@@ -27,3 +27,6 @@
   </article>
 </template>
 
+<style setup>
+.card-container:hover > img { filter: blur(4px); }
+</style>
